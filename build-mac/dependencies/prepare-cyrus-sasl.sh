@@ -29,6 +29,8 @@ mkdir -p "$logdir"
 mkdir -p "$tmpdir"
 mkdir -p "$srcdir"
 
+echo "resultdir:$resultdir"
+
 if test -f "$resultdir/libsasl-$version-ios.tar.gz"; then
 	echo already built
 	cd "$scriptdir/.."
