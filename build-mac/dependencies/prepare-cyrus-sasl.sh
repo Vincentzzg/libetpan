@@ -134,7 +134,7 @@ for TARGET in $TARGETS; do
         (iPhoneOS)
             ARCH=arm
 #            MARCHS="armv7 armv7s arm64"
-            MARCHS="arm64 arm64e"
+            MARCHS="arm64"
             EXTRA_FLAGS="$BITCODE_FLAGS -miphoneos-version-min=$SDK_IOS_MIN_VERSION"
             ;;
         (iPhoneSimulator)
