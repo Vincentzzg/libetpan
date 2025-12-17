@@ -117,7 +117,7 @@ export LANG=en_US.US-ASCII
 LIB_NAME=$ARCHIVE
 TARGETS="iPhoneOS iPhoneSimulator"
 
-SDK_IOS_MIN_VERSION=9.0
+SDK_IOS_MIN_VERSION=12.0
 SDK_IOS_VERSION="`xcodebuild -showsdks 2>/dev/null | grep iphoneos | sed 's/.*iphoneos\(.*\)/\1/'`"
 BUILD_DIR="$tmpdir/build"
 INSTALL_PATH="${BUILD_DIR}/${LIB_NAME}/universal"
@@ -141,8 +141,9 @@ function build_target {
   rm -rf $PREFIX
   
   local CURRENT_TARGET="$MARCH-apple-ios${SDK_IOS_MIN_VERSION}${TARGET_SUFFIX}"
-  export CPPFLAGS="-isysroot ${SYSROOT} -target ${CURRENT_TARGET} -Os"
+  export CPPFLAGS="-isysroot ${SYSROOT} -arch ${MARCH} -mios-version-min=${SDK_IOS_MIN_VERSION} -Os"
   export CFLAGS="${CPPFLAGS} ${EXTRA_FLAGS}"
+  export LDFLAGS="-isysroot ${SYSROOT} -arch ${MARCH}"
   export CC="$xcode_developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
   export CXX="$xcode_developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
   export LD="$xcode_developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld"
@@ -188,14 +189,14 @@ for TARGET in $TARGETS; do
             ARCH=arm
 #            MARCHS="armv7 armv7s arm64"
             MARCHS="arm64"
-            EXTRA_FLAGS="$BITCODE_FLAGS -miphoneos-version-min=$SDK_IOS_MIN_VERSION"
+            EXTRA_FLAGS="$BITCODE_FLAGS"
             TARGET_SUFFIX=""
             ;;
         (iPhoneSimulator)
             ARCH=i386
             # MARCHS="i386 x86_64 arm64"
             MARCHS="x86_64"
-            EXTRA_FLAGS="$BITCODE_FLAGS -miphoneos-version-min=$SDK_IOS_MIN_VERSION"
+            EXTRA_FLAGS="$BITCODE_FLAGS"
             TARGET_SUFFIX="-simulator"
             ;;
     esac
