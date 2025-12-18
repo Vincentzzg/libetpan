@@ -181,8 +181,21 @@ pids=""
 for TARGET in $TARGETS; do
 
     DEVELOPER="$(xcode-select --print-path)"
-    SDK_ID="$(echo "$TARGET$SDK_IOS_VERSION" | tr A-Z a-z)"
-    SYSROOT="$(xcodebuild -version -sdk "$SDK_ID" 2>/dev/null | egrep '^Path: ' | cut -d ' ' -f 2)"
+    
+    # 直接使用 xcrun 获取 SDK 路径,更可靠
+    if [ "$TARGET" = "iPhoneOS" ]; then
+        SYSROOT="$(xcrun --sdk iphoneos --show-sdk-path)"
+    else
+        SYSROOT="$(xcrun --sdk iphonesimulator --show-sdk-path)"
+    fi
+    
+    # 验证 SYSROOT 是否有效
+    if [ ! -d "$SYSROOT" ]; then
+        echo "ERROR: Cannot find SDK at $SYSROOT"
+        exit 1
+    fi
+    
+    echo "Using SDK: $SYSROOT"
 
     case $TARGET in
         (iPhoneOS)
